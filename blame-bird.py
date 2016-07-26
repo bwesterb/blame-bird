@@ -8,21 +8,22 @@ import uuid
 import sqlite3
 import os.path
 
-def validate_uuid(uuid_string):
+def maybe_uuid(x):
+    """ Tries to parse x as an UUID and return that, otherwise return None. """
     try:
-        uuid.UUID(uuid_string)
+        return uuid.UUID(x)
     except ValueError:
-        return False
-    return True
+        return None
 
 def main():
     cache_path = os.path.expanduser('~/Library/Caches/com.apple.bird/session/g')
     # if there is no cache we can exit right away
     if not (os.path.isdir(cache_path)):
-        print "Cache path not found!"
+        print("{}: does not exist at all".format(cache_path))
         return
-    # filter the non-UUID elements inside the path to prevent any errors
-    unaccounted_for = set(map(uuid.UUID, filter(lambda x: validate_uuid(x), os.listdir(cache_path))))
+
+    # Ignore files in the bird cache directory that do not appear to be UUIDs
+    unaccounted_for = set(filter(bool, map(uuid.UUID, os.listdir(cache_path))))
     client_db = sqlite3.connect(os.path.expanduser(
                 '~/Library/Application Support/CloudDocs/session/db/client.db'))
     c = client_db.cursor()
@@ -53,17 +54,17 @@ def main():
     for zone_id, size in sorted(zonesize.items(), key=lambda x: x[1]):
         if size == 0:
             continue
-        print '{:<45} {:>10.2f}MB'.format(zones[zone_id],
-                        zonesize[zone_id] / 1000000.)
+        print('{:<45} {:>10.2f}MB'.format(zones[zone_id],
+                        zonesize[zone_id] / 1000000.))
         accounted_size += zonesize[zone_id]
 
     for guid in unaccounted_for:
         path = os.path.join(cache_path, str(guid).upper())
         unaccounted_size += os.stat(path).st_size
 
-    print
-    print 'Accounted for: {}MB.  Still unaccounted: {}MB'.format(
-                accounted_size / 1000000, unaccounted_size / 1000000)
+    print('')
+    print('Accounted for: {}MB.  Still unaccounted: {}MB'.format(
+                accounted_size // 1000000, unaccounted_size // 1000000))
 
 
 
