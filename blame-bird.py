@@ -8,9 +8,21 @@ import uuid
 import sqlite3
 import os.path
 
+def validate_uuid(uuid_string):
+    try:
+        uuid.UUID(uuid_string)
+    except ValueError:
+        return False
+    return True
+
 def main():
     cache_path = os.path.expanduser('~/Library/Caches/com.apple.bird/session/g')
-    unaccounted_for = set(map(uuid.UUID, os.listdir(cache_path)))
+    # if there is no cache we can exit right away
+    if not (os.path.isdir(cache_path)):
+        print "Cache path not found!"
+        return
+    # filter the non-UUID elements inside the path to prevent any errors
+    unaccounted_for = set(map(uuid.UUID, filter(lambda x: validate_uuid(x), os.listdir(cache_path))))
     client_db = sqlite3.connect(os.path.expanduser(
                 '~/Library/Application Support/CloudDocs/session/db/client.db'))
     c = client_db.cursor()
