@@ -23,7 +23,7 @@ def main():
         return
 
     # Ignore files in the bird cache directory that do not appear to be UUIDs
-    unaccounted_for = set(filter(bool, map(uuid.UUID, os.listdir(cache_path))))
+    unaccounted_for = set(filter(bool, map(maybe_uuid, os.listdir(cache_path))))
     client_db = sqlite3.connect(os.path.expanduser(
                 '~/Library/Application Support/CloudDocs/session/db/client.db'))
     c = client_db.cursor()
