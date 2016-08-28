@@ -67,8 +67,8 @@ def main():
     for zone_id, size in sorted(zonesize.items(), key=lambda x: x[1]):
         if size == 0:
             continue
-        print('{:<45} {:>10.2f}MB'.format(zones[zone_id],
-                        zonesize[zone_id] / 1000000.))
+        print('{:<45} {:>10.2f}MB {:>6}'.format(zones[zone_id],
+                        zonesize[zone_id] / 1000000., len(zonefiles[zone_id])))
         accounted_size += zonesize[zone_id]
 
     for guid in unaccounted_for:
