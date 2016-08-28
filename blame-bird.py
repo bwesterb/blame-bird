@@ -57,9 +57,10 @@ def main():
 
     if len(sys.argv) > 1:
         if sys.argv[1] not in zones.values():
-            print 'error: app "' + sys.argv[1] + '" not found'
+            print('error: app "' + sys.argv[1] + '" not found')
             sys.exit(65)
-        zone_id = zones.keys()[zones.values().index(sys.argv[1])]
+        #zone_id = zones.keys()[zones.values().index(sys.argv[1])]
+        zone_id = list(zones.keys())[list(zones.values()).index(sys.argv[1])]
         for zone_file in zonefiles[zone_id]:
             print(zone_file)
         sys.exit(0)
