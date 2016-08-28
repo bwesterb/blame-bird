@@ -30,9 +30,11 @@ def main():
 
     zones = {}
     zonesize = {}
+    zonefiles = {}
     for rowid, name in c.execute('select rowid, zone_name from client_zones'):
         zones[rowid] = name
         zonesize[rowid] = 0
+        zonefiles[rowid] = []
 
     for raw_guid, zone_id in c.execute(
             'select item_id, zone_rowid from client_unapplied_table'):
@@ -46,6 +48,7 @@ def main():
         if not os.path.exists(path):
             continue
         zonesize[zone_id] += os.stat(path).st_size
+        zonefiles[zone_id].append(path)
         unaccounted_for.remove(guid)
 
     accounted_size = 0
