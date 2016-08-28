@@ -7,6 +7,7 @@ import os
 import uuid
 import sqlite3
 import os.path
+import sys
 
 def maybe_uuid(x):
     """ Tries to parse x as an UUID and return that, otherwise return None. """
@@ -53,6 +54,15 @@ def main():
 
     accounted_size = 0
     unaccounted_size = 0
+
+    if len(sys.argv) > 1:
+        if sys.argv[1] not in zones.values():
+            print 'error: app "' + sys.argv[1] + '" not found'
+            sys.exit(65)
+        zone_id = zones.keys()[zones.values().index(sys.argv[1])]
+        for zone_file in zonefiles[zone_id]:
+            print(zone_file)
+        sys.exit(0)
 
     for zone_id, size in sorted(zonesize.items(), key=lambda x: x[1]):
         if size == 0:
