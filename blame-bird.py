@@ -4,10 +4,10 @@
     a huge Library/Caches/com.apple.bird folder. """
 
 import os
+import sys
 import uuid
 import sqlite3
 import os.path
-import sys
 
 def maybe_uuid(x):
     """ Tries to parse x as an UUID and return that, otherwise return None. """
@@ -32,10 +32,12 @@ def main():
     zones = {}
     zonesize = {}
     zonefiles = {}
+    zone_name2id = {}
     for rowid, name in c.execute('select rowid, zone_name from client_zones'):
         zones[rowid] = name
         zonesize[rowid] = 0
         zonefiles[rowid] = []
+        zone_name2id[name] = rowid
 
     for raw_guid, zone_id in c.execute(
             'select item_id, zone_rowid from client_unapplied_table'):
@@ -56,14 +58,11 @@ def main():
     unaccounted_size = 0
 
     if len(sys.argv) > 1:
-        if sys.argv[1] not in zones.values():
-            print('error: app "' + sys.argv[1] + '" not found')
-            sys.exit(65)
-        #zone_id = zones.keys()[zones.values().index(sys.argv[1])]
-        zone_id = list(zones.keys())[list(zones.values()).index(sys.argv[1])]
-        for zone_file in zonefiles[zone_id]:
-            print(zone_file)
-        sys.exit(0)
+        if sys.argv[1] not in zone_name2id:
+            print('{}: no such zone'.format(sys.argv[1]))
+            return -1
+        print '\n'.join(zonefiles[zone_name2id[sys.argv[1]]])
+        return 0
 
     for zone_id, size in sorted(zonesize.items(), key=lambda x: x[1]):
         if size == 0:
@@ -83,5 +82,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
-
+    sys.exit(main())
