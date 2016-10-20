@@ -26,3 +26,5 @@ $ python blame-bird.py com.apple.TextInput # | xargs du -hs
 /Users/usr/Library/Caches/com.apple.bird/session/g/B4B6DCFE-9958-498E-9B53-8C6195A2CF30
 /Users/usr/Library/Caches/com.apple.bird/session/g/28456B01-2DDD-4F08-924A-6C1BB8F04464
 ```
+
+See [this question on Ask Different](http://apple.stackexchange.com/questions/220007).
