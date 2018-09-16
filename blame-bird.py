@@ -61,7 +61,7 @@ def main():
         if sys.argv[1] not in zone_name2id:
             print('{}: no such zone'.format(sys.argv[1]))
             return -1
-        print '\n'.join(zonefiles[zone_name2id[sys.argv[1]]])
+        print('\n'.join(zonefiles[zone_name2id[sys.argv[1]]]))
         return 0
 
     for zone_id, size in sorted(zonesize.items(), key=lambda x: x[1]):
