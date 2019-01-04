@@ -40,7 +40,7 @@ def main():
         zone_name2id[name] = rowid
 
     for raw_guid, zone_id in c.execute(
-            'select item_id, zone_rowid from client_unapplied_table'):
+            'select t2.item_id, t1.zone_rowid from client_unapplied_table t1, client_items t2 where t1.throttle_id = t2.item_notifs_rank'):
         # Apparently, not every item_id is an UUID.
         if len(raw_guid) != 16:
             continue
